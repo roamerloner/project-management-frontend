@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import api from '../axios';
 
 const Login = () => {
@@ -8,13 +8,12 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState(""); 
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
          setLoading(true);
          setMessage("");
-        console.log("Email: ", email);
-        console.log("Password: ", password);
 
         try {
             const response = await api.post('/login', {
@@ -24,11 +23,8 @@ const Login = () => {
 
             const token = response.data.token;
             localStorage.setItem("token", token);
-            
-           
             setMessage(response.data.message);
-            console.log("User", response.data.user);
-            console.log("Token", token);
+            navigate('/dashboard');
         } catch (error) {
             if(error.response && error.response.data.message){
                 setMessage(error.response.data.message);
